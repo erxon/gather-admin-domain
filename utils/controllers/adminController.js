@@ -2,6 +2,16 @@ import crypto from "crypto";
 import dbConnect from "../db/dbConnect";
 import Admin from "../db/models/admin";
 
+const users = async () => {
+  try {
+    await dbConnect();
+    const result = await Admin.find().select("username createdAt");
+    return result;
+  } catch (error) {
+    return error;
+  }
+};
+
 const createUser = async (username, password) => {
   try {
     await dbConnect();
@@ -24,6 +34,16 @@ const createUser = async (username, password) => {
   }
 };
 
+const findUserById = async (id) => {
+  try {
+    await dbConnect();
+    const user = await Admin.findById(id);
+    return user;
+  } catch (error) {
+    return { error: error };
+  }
+};
+
 const findUserByUsername = async (username) => {
   try {
     await dbConnect();
@@ -34,20 +54,29 @@ const findUserByUsername = async (username) => {
   }
 };
 
-const updateUserByUsername = async (username, update) => {
+const updateUserById = async (id, update) => {
   try {
-    await dbConnect();
-    const user = await Admin.findOneAndUpdate(username, update);
-    return { message: "succesfully updated", update: user };
+    const user = await Admin.findByIdAndUpdate(id, update);
+    return user;
   } catch (error) {
     return error;
   }
 };
 
-const deleteUser = async (username) => {
+const updateUserByUsername = async (username, update) => {
   try {
     await dbConnect();
-    const user = await Admin.findOneAndDelete(username);
+    const user = await Admin.findOneAndUpdate(username, update);
+    return { message: "succesfully updated", user: user, update: update };
+  } catch (error) {
+    return error;
+  }
+};
+
+const deleteUser = async (id) => {
+  try {
+    await dbConnect();
+    const user = await Admin.findByIdAndDelete(id);
     return { message: "user deleted", data: user };
   } catch (error) {
     return error;
@@ -66,8 +95,11 @@ const validatePassword = (user, inputPassword) => {
 
 export {
   createUser,
+  findUserById,
   findUserByUsername,
+  updateUserById,
   updateUserByUsername,
   deleteUser,
   validatePassword,
+  users,
 };
