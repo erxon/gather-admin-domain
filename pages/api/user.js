@@ -1,37 +1,40 @@
-import nextConnect from 'next-connect'
-import auth from '@/utils/middleware/auth'
-import { deleteUser, createUser, updateUserByUsername } from '@/utils/controllers/adminController'
+import nextConnect from "next-connect";
+import auth from "@/utils/middleware/auth";
+import {
+  deleteUser,
+  createUser,
+  updateUserByUsername,
+} from "@/utils/controllers/adminController";
 
-const handler = nextConnect()
+const handler = nextConnect();
 
 handler
   .use(auth)
-  .get((req, res) => {
-    const {username, createdAt} = req.user;
-    // res.json({ user: { name, username, favoriteColor } })
-    res.json({ user: {username, createdAt}})
+  .get(async (req, res) => {
+    const user = await req.user;
+    res.json({user});
   })
   .post(async (req, res) => {
-    const { username, password} = req.body
-    const result = await createUser(req, { username, password })
-    res.status(200).json(result)
+    const { username, password } = req.body;
+    const result = await createUser(req, { username, password });
+    res.status(200).json(result);
   })
   .use((req, res, next) => {
     if (!req.user) {
-      res.status(401).send('unauthenticated')
+      res.status(401).send("unauthenticated");
     } else {
-      next()
+      next();
     }
   })
   .put(async (req, res) => {
-    const update = req.body
-    const user = await updateUserByUsername(req, req.user.username, update)
-    res.json({ user })
+    const update = req.body;
+    const user = await updateUserByUsername(req, req.user.username, update);
+    res.json({ user });
   })
   .delete(async (req, res) => {
-    await deleteUser(req)
-    req.logOut()
-    res.status(204).end()
-  })
+    await deleteUser(req);
+    req.logOut();
+    res.status(204).end();
+  });
 
-export default handler
+export default handler;

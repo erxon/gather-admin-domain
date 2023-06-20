@@ -20,7 +20,6 @@ import {
   import ArticleIcon from "@mui/icons-material/Article";
   import PhotoIcon from "@mui/icons-material/Photo";
   import MenuIcon from "@mui/icons-material/Menu";
-  
   const drawerWidth = 240;
   function LayoutListItem(props) {
     const router = useRouter();
@@ -133,10 +132,11 @@ import {
   
   export default function Layout({children}) {
     const [mobileOpen, setMobileOpen] = useState(false);
-  
+
     const handleDrawerToggle = () => {
       setMobileOpen(!mobileOpen);
     };
+
     return (
       <Box sx={{ display: "flex" }}>
         <LayoutDrawer mobileOpen={mobileOpen} drawerToggle={handleDrawerToggle} />

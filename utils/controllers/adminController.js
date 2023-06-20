@@ -56,7 +56,7 @@ const deleteUser = async (username) => {
 
 // Compare the password of an already fetched user (using `findUserByUsername`) and compare the
 // password for a potential match
-const validatePassword = async (user, inputPassword) => {
+const validatePassword = (user, inputPassword) => {
   const inputHash = crypto
     .pbkdf2Sync(inputPassword, user.salt, 1000, 64, "sha512")
     .toString("hex");

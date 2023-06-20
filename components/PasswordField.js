@@ -9,6 +9,7 @@ export default function PasswordField(props) {
   return (
     <TextField
       fullWidth
+      error={props.error}
       name={props.name}
       onChange={props.handleChange}
       value={props.password}

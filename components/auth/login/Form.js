@@ -9,13 +9,22 @@ import {
 } from "@mui/material";
 import PasswordField from "../../PasswordField";
 import Layout from "../Layout";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useUser } from "@/utils/auth/hooks";
+import { useRouter } from "next/router";
 
 export default function Form() {
+  const [user, {mutate}] = useUser();
+  const router = useRouter()
+
   const [fieldValues, setFieldValues] = useState({
     username: "",
     password: "",
   });
+  const [triggerError, setError] = useState({
+    open: false,
+    message: ''
+  })
 
   const handleChange = (event) => {
     const { value, name } = event.target;
@@ -30,28 +39,40 @@ export default function Form() {
       body: JSON.stringify(fieldValues)
     })
 
-    const result = await login.json();
 
-    console.log(result)
-    console.log(fieldValues);
+    if(login.status === 200){
+      const user = await login.json()
+      mutate(user)
+    } else {
+      setError({open: true, message: 'Incorrect username or password'})
+    }
+     
   };
+
+  useEffect(() => {
+    if(user){
+      router.push('/')
+    }
+  }, [user])
 
   return (
     <Layout header="Login">
       <TextField
         fullWidth
+        error={triggerError.open}
         label="Username"
         name="username"
         onChange={handleChange}
         value={fieldValues.username}
       />
       <PasswordField
+        error={triggerError.open}
         handleChange={handleChange}
         password={fieldValues.password}
         name="password"
         label="Password"
       />
-
+      {triggerError.open  && <Typography color="red">{triggerError.message}</Typography>}
       {/*****************************************/}
       <Button variant="contained" onClick={handleSubmit}>
         Login
