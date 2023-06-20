@@ -1,54 +1,68 @@
 import dbConnect from "../db/dbConnect";
 import Report from "../db/models/report";
 
-const getAllReports = async () => {
+const getAllReports = async (req, res) => {
   try {
     await dbConnect();
     const reports = await Report.find({});
-    return reports;
+    res.status(200).json(reports);
   } catch (error) {
-    return { error: error };
+    res.status(400).json({ error: error });
   }
 };
 
-const getSingleReport = async (id) => {
+const getSingleReport = async (req, res, next) => {
+  const { id } = req.query;
   try {
     await dbConnect();
     const report = await Report.findById(id);
-    return report;
+    if (!report) {
+      return res.status(400).json({ error: "no report found." });
+    }
+    req.result = report;
+    next();
   } catch (error) {
-    return { error: error };
+    res.status(400).json({ error: error });
   }
 };
 
-const updateReport = async (report, update) => {
+const readReport = (req, res) => {
+  res.status(200).json(req.result);
+};
+
+const updateReport = async (req, res) => {
   try {
     await dbConnect();
 
-    const { firstName, lastName, conditions, lastSeen } = update;
-
-    const result = await Report.findByIdAndUpdate(report._id, {
+    const { firstName, lastName, conditions, lastSeen } = req.body;
+    const report = await Report.updateOne({_id: req.result._id}, {
       firstName,
       lastName,
       conditions,
       lastSeen,
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
     });
 
-    return result;
+    res.status(200).json(report);
   } catch (error) {
-    return { error: error };
+    res.status(400).json({ error: error });
   }
 };
 
-const deleteReport = async (report) => {
+const deleteReport = async (req, res) => {
   try {
     await dbConnect();
-    const result = await Report.findByIdAndDelete(report._id);
-    return result;
+    const result = await Report.deleteOne({_id: req.result._id});
+    res.status(200).json(result)
   } catch (error) {
-    return { error: error };
+    res.status(400).json({error: error})
   }
 };
 
-export { getAllReports, getSingleReport, updateReport, deleteReport };
+export {
+  getAllReports,
+  getSingleReport,
+  updateReport,
+  deleteReport,
+  readReport,
+};

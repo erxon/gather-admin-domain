@@ -1,13 +1,13 @@
 import dbConnect from "../db/dbConnect";
 import User from "../db/models/user";
 
-const getUsers = async () => {
+const getUsers = async (res) => {
   try {
     await dbConnect();
     const users = await User.find();
-    return users;
+    res.status(200).json(users)
   } catch (error) {
-    return { error: error };
+    res.status(400).json({ error: error })
   }
 };
 
@@ -24,43 +24,52 @@ const addUser = async (data) => {
   }
 };
 
-const singleUser = async (id) => {
+const getSingleUser = async (req, res, next) => {
+  const { id } = req.query;
   try {
     await dbConnect();
     const user = await User.findById(id);
-    return user;
+    if (!req.result) {
+      return res.status(400).json({ error: "user does not exist" });
+    }
+    req.result = user;
+    next();
   } catch (error) {
-    return { error: error };
+    res.status(400).json({ error: error });
   }
 };
+const readUser = (req, res) => {
+  
+  res.status(200).json(req.result);
+};
 
-const updateUser = async (user, update) => {
+const updateUser = async (req, res) => {
   try {
     await dbConnect();
-    
-    const { firstName, lastName, type } = update;
 
-    const updateUser = await User.findByIdAndUpdate(user._id, {
+    const { firstName, lastName, type } = req.body;
+
+    const updateUser = await User.updateOne({_id: req.result._id}, {
       firstName,
       lastName,
       type,
       updatedAt: Date.now(),
     });
 
-    return { message: "updated successfully", update: updateUser };
+    res.status(200).json(updateUser)
   } catch (error) {
-    return { error: error };
+    res.status(400).json({ error: error })
   }
 };
 
-const deleteUser = async (user) => {
+const deleteUser = async (req, res) => {
   try {
     await dbConnect();
-    const deleteUser = await User.findByIdAndDelete(user._id);
-    return deleteUser;
+    const deleteUser = await User.deleteOne({_id: req.result._id});
+    res.status(200).json(deleteUser)
   } catch (error) {
-    return { error: error };
+    res.status(400).json({ error: error })
   }
 };
 
-export { getUsers, addUser, singleUser, updateUser, deleteUser };
+export { getUsers, addUser, getSingleUser, readUser, updateUser, deleteUser };

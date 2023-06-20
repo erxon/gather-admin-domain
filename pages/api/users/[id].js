@@ -1,8 +1,11 @@
+import { readUser } from "@/utils/controllers/adminController";
 import {
   singleUser,
   updateUser,
   deleteUser,
+  getSingleUser,
 } from "@/utils/controllers/usersController";
+import { checkAuth } from "@/utils/helpers/checkAuth";
 import auth from "@/utils/middleware/auth";
 import nextConnect from "next-connect";
 
@@ -10,43 +13,20 @@ const handler = nextConnect();
 
 handler
   .use(auth)
-  .use(async (req, res, next) => {
-    const user = await req.user;
-    if (!user) {
-      res.status(400).json({ error: "unauthorized." });
-    }
-    next();
+  .use((req, res, next) => {
+    checkAuth(req, res, next)
   })
-  .use(async (req, res, next) => {
-    const { id } = req.query;
-    const result = await singleUser(id);
-
-    if (result && result.error) {
-      return res.status(400).json(result.error);
-    }
-    if (!result) {
-      return res.status(400).json({ error: "user not found." });
-    }
-
-    req.result = result;
-    next();
+  .use((req, res, next) => {
+    getSingleUser(req, res, next)
   })
-  .get(async (req, res) => {
-    res.json(req.result);
+  .get((req, res) => {
+    readUser(req, res)
   })
-  .put(async (req, res) => {
-    const updateResult = await updateUser(req.result, req.body);
-    if (updateResult && updateResult.error) {
-      res.status(400).json(updateResult.error);
-    }
-    res.json(updateResult);
+  .put((req, res) => {
+    updateUser(req, res);
   })
-  .delete(async (req, res) => {
-    const deleteUserResult = await deleteUser(req.result);
-    if (deleteUserResult && deleteUserResult.error) {
-      res.status(400).json(deleteUserResult.error);
-    }
-    res.json(deleteUserResult);
+  .delete((req, res) => {
+     deleteUser(req, res)
   });
 
 export default handler;

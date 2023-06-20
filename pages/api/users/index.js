@@ -6,8 +6,7 @@ const handler = nextConnect();
 handler
   .get(async (req, res) => {
     //get all users
-    const users = await getUsers();
-    res.status(200).json(users);
+     getUsers(res);
   })
   .post((req, res) => {
     //push user to DB after verification

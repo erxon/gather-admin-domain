@@ -2,17 +2,35 @@ import crypto from "crypto";
 import dbConnect from "../db/dbConnect";
 import Admin from "../db/models/admin";
 
-const users = async () => {
+const users = async (res) => {
   try {
     await dbConnect();
     const result = await Admin.find().select("username createdAt");
-    return result;
+
+    res.status(200).json(result);
   } catch (error) {
-    return error;
+    res.status(400).json({ error: error });
   }
 };
 
-const createUser = async (username, password) => {
+const isValid = async (req, res, next) => {
+  const { username, password } = req.body;
+  const usernameExist = await Admin.findOne({ username: username });
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ error: "Please fill in the necessary fields." });
+  }
+
+  if (usernameExist) {
+    return res.status(400).json({ error: "Username already used." });
+  }
+  next();
+};
+
+const createUser = async (req, res) => {
+  const { username, password } = req.body;
+
   try {
     await dbConnect();
     const salt = crypto.randomBytes(16).toString("hex");
@@ -28,20 +46,32 @@ const createUser = async (username, password) => {
 
     const newAdmin = Admin(user);
     await newAdmin.save();
-    return { message: "user successfully saved" };
+
+    res.status(200).json(newAdmin);
   } catch (error) {
-    return error;
+    res.status(400).json({ error: error });
   }
 };
 
-const findUserById = async (id) => {
+const findUserById = async (req, res, next) => {
+  const { id } = req.query;
   try {
     await dbConnect();
     const user = await Admin.findById(id);
-    return user;
+    if (!user) {
+      return res.status(400).json({ error: "user do not exist." });
+    }
+
+    req.result = user;
+
+    next();
   } catch (error) {
-    return { error: error };
+    res.status(400).json({ error: error });
   }
+};
+
+const readUser = async (req, res) => {
+  res.status(200).json(req.result);
 };
 
 const findUserByUsername = async (username) => {
@@ -54,12 +84,18 @@ const findUserByUsername = async (username) => {
   }
 };
 
-const updateUserById = async (id, update) => {
+const updateAdmin = async (req, res) => {
   try {
-    const user = await Admin.findByIdAndUpdate(id, update);
-    return user;
+    const user = req.result;
+
+    user.firstName = req.body.firstName;
+    user.lastName = req.body.lastName;
+    user.updatedAt = Date.now();
+
+    await user.save();
+    res.status(200).json(user);
   } catch (error) {
-    return error;
+    res.status(400).json({ error: error });
   }
 };
 
@@ -73,13 +109,13 @@ const updateUserByUsername = async (username, update) => {
   }
 };
 
-const deleteUser = async (id) => {
+const deleteAdmin = async (req, res) => {
   try {
     await dbConnect();
-    const user = await Admin.findByIdAndDelete(id);
-    return { message: "user deleted", data: user };
+    const deleteAdmin = await Admin.deleteOne(req.result._id);
+    res.status(200).json(deleteAdmin);
   } catch (error) {
-    return error;
+    res.status(400).json({ error: error });
   }
 };
 
@@ -94,12 +130,14 @@ const validatePassword = (user, inputPassword) => {
 };
 
 export {
+  isValid,
   createUser,
   findUserById,
+  readUser,
   findUserByUsername,
-  updateUserById,
+  updateAdmin,
   updateUserByUsername,
-  deleteUser,
+  deleteAdmin,
   validatePassword,
   users,
 };
