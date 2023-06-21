@@ -5,7 +5,9 @@ import Admin from "../db/models/admin";
 const users = async (res) => {
   try {
     await dbConnect();
-    const result = await Admin.find().select("username firstName lastName createdAt");
+    const result = await Admin.find().select(
+      "username firstName lastName createdAt"
+    );
 
     res.status(200).json(result);
   } catch (error) {
@@ -112,9 +114,8 @@ const updateUserByUsername = async (username, update) => {
 const deleteAdmin = async (req, res) => {
   try {
     await dbConnect();
-    //Check if the username typed in client matches the user's username
     const deleteAdmin = await Admin.deleteOne(req.result._id);
-    res.status(200).json(deleteAdmin);
+    res.status(200).json({ message: "Successfully deleted.", deleteAdmin });
   } catch (error) {
     res.status(400).json({ error: error });
   }
@@ -178,8 +179,8 @@ const changeOtherAdminPassword = async (req, res) => {
     //check if the currentPassword matches with the admin's registered password
     const isMatch = validatePassword(admin, currentPassword);
 
-    if(!isMatch){
-      return res.status(400).json({error: 'Password did not match.'})
+    if (!isMatch) {
+      return res.status(400).json({ error: "Password did not match." });
     }
     //if matched, generate new salt and hash for the new password
     const salt = crypto.randomBytes(16).toString("hex");
@@ -199,7 +200,7 @@ const changeOtherAdminPassword = async (req, res) => {
     //send success message to the client
     res.status(200).json({ message: "Password Changed.", applyUpdateResult });
   } catch (error) {
-    res.status(400).json({error: error})
+    res.status(400).json({ error: error });
   }
 };
 

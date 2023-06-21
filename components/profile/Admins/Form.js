@@ -2,8 +2,7 @@ import PasswordField from "@/components/PasswordField";
 import { Box, TextField, Paper, Typography, Button } from "@mui/material";
 import { useState } from "react";
 
-
-export default function Form() {
+export default function Form(props) {
   const [values, setValues] = useState({
     username: "",
     password: "",
@@ -15,21 +14,23 @@ export default function Form() {
   };
 
   const handleSubmit = async () => {
-    console.log(values)
-    const newAdmin = await fetch('/api/admin', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(values)
-    })
-    const result = await newAdmin.json()
+    const newAdmin = await fetch("/api/admin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
 
-    console.log(result)
-  }
+    if (newAdmin.status === 200) {
+      const result = await newAdmin.json();
+      props.mutate([...props.admins, result])
+      props.setShowForm(false);
+    }
+  };
 
   return (
     <Paper variant="outlined" sx={{ width: 350, p: 3 }}>
       <Typography sx={{ mb: 2 }}>New admin</Typography>
-      <Box sx={{mb: 2}}>
+      <Box sx={{ mb: 2 }}>
         <TextField
           sx={{ mb: 2 }}
           fullWidth

@@ -13,15 +13,19 @@ import Form from "./Form";
 import StackRowLayout from "@/components/StackRowLayout";
 import { useState } from "react";
 
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 
 export default function Admins(props) {
-  const { data, error, isLoading } = useSWR("/api/admin", fetcher);
+  const { data, mutate, error, isLoading } = useSWR("/api/admin", fetcher);
   const [showForm, setShowForm] = useState(false);
 
   if (error)
     return <Typography>Something went wrong while fetching admins.</Typography>;
   if (isLoading) return <CircularProgress />;
+
+  const handleClose = () => {
+    setShowForm(false)
+  }
 
   const handleClick = () => {
     setShowForm(true);
@@ -37,7 +41,11 @@ export default function Admins(props) {
       <StackRowLayout spacing={2}>
         <Typography variant="body1">Administrators</Typography>
         <StackRowLayout spacing={0.5}>
-          <Button startIcon={<AddIcon />} onClick={handleClick} variant="contained">
+          <Button
+            startIcon={<AddIcon />}
+            onClick={handleClick}
+            variant="contained"
+          >
             Add
           </Button>
           {showForm && (
@@ -49,7 +57,7 @@ export default function Admins(props) {
       </StackRowLayout>
       {showForm && (
         <Box sx={{ mt: 3 }}>
-          <Form />
+          <Form admins={data} mutate={mutate} setShowForm={setShowForm} />
         </Box>
       )}
 
@@ -70,7 +78,6 @@ export default function Admins(props) {
             />
           );
         })}
-        <pre>{JSON.stringify(data, null, 2)}</pre>
     </Box>
   );
 }
