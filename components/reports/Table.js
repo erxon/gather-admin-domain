@@ -4,7 +4,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import Router from "next/router";
 
 const columns = [
-  { field: "id", headerName: "ID", width: 50 },
+  { field: "id", headerName: "Index", width: 50 },
   {
     field: "_id",
     headerName: "Database ID",
