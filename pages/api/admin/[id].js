@@ -24,7 +24,7 @@ handler
   .put((req, res) => {
     updateAdmin(req, res)
   })
-  .delete(async (req, res) => {
+  .delete((req, res) => {
     deleteAdmin(req, res)
   });
 

@@ -93,16 +93,16 @@ const updateAdmin = async (req, res) => {
     user.updatedAt = Date.now();
 
     await user.save();
-    res.status(200).json(user);
+    res.status(200).json({ user, message: "Updated successfully." });
   } catch (error) {
-    res.status(400).json({ error: error });
+    res.status(400).json({ error: error, message: "Something went wrong." });
   }
 };
 
 const updateUserByUsername = async (username, update) => {
   try {
     await dbConnect();
-    const user = await Admin.findOneAndUpdate(username, update);
+    const user = await Admin.findOneAndUpdate({username: username}, update);
     return { message: "succesfully updated", user: user, update: update };
   } catch (error) {
     return error;
@@ -112,6 +112,7 @@ const updateUserByUsername = async (username, update) => {
 const deleteAdmin = async (req, res) => {
   try {
     await dbConnect();
+    //Check if the username typed in client matches the user's username
     const deleteAdmin = await Admin.deleteOne(req.result._id);
     res.status(200).json(deleteAdmin);
   } catch (error) {
@@ -129,6 +130,47 @@ const validatePassword = (user, inputPassword) => {
   return passwordsMatch;
 };
 
+const changePassword = async (req, res) => {
+  const user = await req.user;
+  const {
+    currentPassword,
+    newPassword
+  } = req.body
+
+  //if fields are empty send error
+  if(currentPassword === "" || newPassword === ""){
+    return res.status(400).json({message: 'Please fill all the necessary fields.'})
+  }
+  //check if password match
+  const isMatch = validatePassword(user, currentPassword)
+  
+  if(isMatch){
+    try{
+      //if match, generate salt and hash for new password
+      const newPasswordSalt = crypto.randomBytes(16).toString("hex");
+      const newPasswordHash = crypto
+      .pbkdf2Sync(newPassword, newPasswordSalt, 1000, 64, "sha512")
+      .toString("hex");
+      const update = {
+        salt: newPasswordSalt,
+        hash: newPasswordHash,
+        updatedAt: Date.now()
+      }
+      //save the new salt and hash
+      const updateUser = await updateUserByUsername(user.username, update)
+      //send success message
+      res.status(200).json(updateUser)
+    } catch (error){
+      res.status(400).json({error: error, message: 'something went wrong.'})
+    }
+  } else {
+    //if not match, send error message 'password not match'
+    res.status(400).json({error: 'Password does not match.' })
+  }
+}
+
+
+
 export {
   isValid,
   createUser,
@@ -140,4 +182,5 @@ export {
   deleteAdmin,
   validatePassword,
   users,
+  changePassword
 };

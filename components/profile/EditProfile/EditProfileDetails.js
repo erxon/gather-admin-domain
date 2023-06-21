@@ -1,23 +1,58 @@
-import { Button, TextField, Typography, Box } from "@mui/material";
-import StackRowLayout from "@/src/app/components/StackRowLayout";
-import Layout from "./Layout";
+import { Button, TextField, Typography, Box, Divider } from "@mui/material";
+import StackRowLayout from "@/components/StackRowLayout";
 import React, { useState } from "react";
+import DisplaySnackbar from "@/components/DisplaySnackbar";
 
 export default function EditProfileDetails(props) {
-    console.log(user)
+  const [user, setUser] = useState({
+    username: props.user.username,
+    firstName: props.user.firstName,
+    lastName: props.user.lastName,
+  });
+  const [displaySnackbar, setDisplaySnackbar] = useState({
+    open: false,
+    message: "",
+  });
+
+  const handleSnackbarClose = () => {
+    setDisplaySnackbar({ open: false });
+  };
+
   const handleChange = (event) => {
     const { value, name } = event.target;
     setUser({ ...user, [name]: value });
   };
 
-  const handleSave = () => {
-    console.log(user);
+  const handleSave = async () => {
+    const update = await fetch(
+      `/api/admin/${props.user._id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: user.firstName,
+          lastName: user.lastName,
+        }),
+      }
+    );
+
+    const result = await update.json();
+    setDisplaySnackbar({
+      open: true,
+      message: `${result.message} ${result.user.firstName} ${result.user.lastName}`,
+    });
   };
 
   return (
-    <Layout>
+    <Box>
+      {/*Trigger snackbar*/}
+      <DisplaySnackbar
+        open={displaySnackbar.open}
+        message={displaySnackbar.message}
+        handleClose={handleSnackbarClose}
+      />
       <StackRowLayout spacing={2}>
-        <Typography variant="h6">Details</Typography>
+        <Typography variant="body1">Details</Typography>
         <Button
           onClick={handleSave}
           disableElevation
@@ -27,35 +62,27 @@ export default function EditProfileDetails(props) {
           Save
         </Button>
       </StackRowLayout>
+
+      <Divider sx={{ my: 2 }} />
+
       <Box sx={{ mt: 2 }}>
         <TextField
-          sx={{ mb: 1.5 }}
+          sx={{ mr: 1 }}
+          size="small"
           name="firstName"
           onChange={handleChange}
           value={user.firstName}
           label="First Name"
         />
         <TextField
-          sx={{ mb: 1.5 }}
+          sx={{ mr: 1 }}
+          size="small"
           name="lastName"
           onChange={handleChange}
           value={user.lastName}
           label="Last Name"
         />
-        <TextField
-          sx={{ mb: 1.5 }}
-          name="email"
-          onChange={handleChange}
-          value={user.email}
-          label="Email"
-        />
-        <TextField
-          name="contactNumber"
-          onChange={handleChange}
-          value={user.contactNumber}
-          label="Contact Number"
-        />
       </Box>
-    </Layout>
+    </Box>
   );
 }
