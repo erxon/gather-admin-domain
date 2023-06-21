@@ -9,16 +9,17 @@ import Table from "@/components/reports/Table";
 import useSWR from "swr";
 import { fetcher } from "@/utils/auth/hooks";
 
-
-
-
 export default function Page() {
   const { data, mutate, error, isLoading } = useSWR('/api/reports', fetcher);
 
   if(error) return <Typography>Something went wrong fetching reports.</Typography>
   if (isLoading) return <CircularProgress />
 
-  const result = addID(data);
+  const filterReports = data.filter((report) => {
+    return report.status !== 'archive'
+  })
+
+  const result = addID(filterReports);
 
   return (
     <div>

@@ -34,12 +34,8 @@ const updateReport = async (req, res) => {
   try {
     await dbConnect();
 
-    const { firstName, lastName, conditions, lastSeen } = req.body;
     const report = await Report.updateOne({_id: req.result._id}, {
-      firstName,
-      lastName,
-      conditions,
-      lastSeen,
+      ...req.body,
       updatedAt: Date.now(),
     });
 
