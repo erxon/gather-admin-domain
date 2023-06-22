@@ -29,7 +29,7 @@ const getSingleUser = async (req, res, next) => {
   try {
     await dbConnect();
     const user = await User.findById(id);
-    if (!req.result) {
+    if (!user) {
       return res.status(400).json({ error: "user does not exist" });
     }
     req.result = user;

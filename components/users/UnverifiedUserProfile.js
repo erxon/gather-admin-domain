@@ -38,7 +38,6 @@ export default function UnverifiedUserProfile({ profile }) {
   });
 
   const handleVerify = async () => {
-    console.log("verify user", profile._id, "set status: verified");
     const verifyUser = await fetch(`/api/users/${profile._id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },

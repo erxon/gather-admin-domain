@@ -13,28 +13,31 @@ export default function Page() {
   if (error)
     return <Typography>Something went wrong fetching users</Typography>;
   if (isLoading) return <CircularProgress />;
-
+console.log(data)
   return (
     <div>
       <Typography variant="h6">Unverified users</Typography>
       <Divider sx={{ my: 2 }} />
       <Grid container spacing={2}>
-        <Grid item xs={12} md={4}>
-          {data.map((user) => {
-            return (
-              <UnverifiedUser
-                profile={user}
-                profileToExpand={setProfileToExpand}
-              />
-            );
-          })}
-        </Grid>
+
+        {data.length > 0 ? (
+          <Grid item xs={12} md={4}>
+            {data.map((user) => {
+              return (
+                <UnverifiedUser
+                  profile={user}
+                  profileToExpand={setProfileToExpand}
+                />
+              );
+            })}
+          </Grid>
+        ) : (<Typography sx={{p: 3}} variant="body1" color="GrayText">There were no unverified users.</Typography>)}
         <Grid item xs={12} md={8}>
-          {profileToExpand && <UnverifiedUserProfile profile={profileToExpand} />}
+          {profileToExpand && (
+            <UnverifiedUserProfile profile={profileToExpand} />
+          )}
         </Grid>
       </Grid>
-
-      
     </div>
   );
 }
