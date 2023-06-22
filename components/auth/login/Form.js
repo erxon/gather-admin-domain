@@ -14,8 +14,8 @@ import { useUser } from "@/utils/auth/hooks";
 import { useRouter } from "next/router";
 
 export default function Form() {
-  const [user, {mutate}] = useUser();
-  const router = useRouter()
+  const [user, { mutate }] = useUser();
+  const router = useRouter();
 
   const [fieldValues, setFieldValues] = useState({
     username: "",
@@ -23,8 +23,8 @@ export default function Form() {
   });
   const [triggerError, setError] = useState({
     open: false,
-    message: ''
-  })
+    message: "",
+  });
 
   const handleChange = (event) => {
     const { value, name } = event.target;
@@ -33,50 +33,53 @@ export default function Form() {
 
   const handleSubmit = async () => {
     //API Call
-    const login = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(fieldValues)
-    })
+    const login = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(fieldValues),
+    });
 
-
-    if(login.status === 200){
-      const user = await login.json()
-      mutate(user)
+    if (login.status === 200) {
+      const user = await login.json();
+      mutate(user);
     } else {
-      setError({open: true, message: 'Incorrect username or password'})
+      setError({ open: true, message: "Incorrect username or password" });
     }
-     
   };
 
   useEffect(() => {
-    if(user){
-      router.push('/')
+    if (user) {
+      router.push("/");
     }
-  }, [user])
+  }, [user]);
 
   return (
-    <Layout header="Login">
-      <TextField
-        fullWidth
-        error={triggerError.open}
-        label="Username"
-        name="username"
-        onChange={handleChange}
-        value={fieldValues.username}
-      />
-      <PasswordField
-        error={triggerError.open}
-        handleChange={handleChange}
-        password={fieldValues.password}
-        name="password"
-        label="Password"
-      />
-      {triggerError.open  && <Typography color="red">{triggerError.message}</Typography>}
-      {/*****************************************/}
-      <Button variant="contained" onClick={handleSubmit}>
-        Login
-      </Button>
-    </Layout>
+    <Box>
+      <Layout header="Gather Admin Domain">
+        <Typography variant="body1">Login</Typography>
+        <TextField
+          fullWidth
+          error={triggerError.open}
+          label="Username"
+          name="username"
+          onChange={handleChange}
+          value={fieldValues.username}
+        />
+        <PasswordField
+          error={triggerError.open}
+          handleChange={handleChange}
+          password={fieldValues.password}
+          name="password"
+          label="Password"
+        />
+        {triggerError.open && (
+          <Typography color="red">{triggerError.message}</Typography>
+        )}
+        {/*****************************************/}
+        <Button variant="contained" onClick={handleSubmit}>
+          Login
+        </Button>
+      </Layout>
+    </Box>
   );
 }
