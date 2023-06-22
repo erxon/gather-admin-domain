@@ -25,6 +25,7 @@ console.log(data)
             {data.map((user) => {
               return (
                 <UnverifiedUser
+                  key={user._id}
                   profile={user}
                   profileToExpand={setProfileToExpand}
                 />

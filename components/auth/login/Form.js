@@ -51,7 +51,7 @@ export default function Form() {
     if (user) {
       router.push("/");
     }
-  }, [user]);
+  }, [user, router]);
 
   return (
     <Box>

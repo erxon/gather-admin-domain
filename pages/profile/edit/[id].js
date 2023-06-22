@@ -2,7 +2,7 @@ import Layout from "@/components/profile/Layout";
 import { useRouter } from "next/router";
 import useSWR from 'swr';
 import { fetcher } from "@/utils/auth/hooks";
-import { CircularProgress, Paper } from "@mui/material";
+import { CircularProgress, Paper, Typography } from "@mui/material";
 import EditProfileDetails from "@/components/profile/EditProfile/EditProfileDetails";
 import ChangeOtherAdminPassword from "@/components/profile/EditProfile/ChangeOtherAdminPassword";
 

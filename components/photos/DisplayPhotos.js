@@ -38,7 +38,7 @@ export default function DisplayPhotos(props) {
         <Layout heading="Folders">
           {referencePhotos.length > 0 &&
             referencePhotos.map((reference) => {
-              return <Folder reference={reference} />;
+              return <Folder key={reference._id} reference={reference} />;
             })}
         </Layout>
       </Box>
@@ -49,7 +49,7 @@ export default function DisplayPhotos(props) {
       <Layout heading="Query Photos">
         {queryPhotos.length > 0 &&
           queryPhotos.map((photo) => {
-            return <QueryPhoto photo={photo} />;
+            return <QueryPhoto key={photo._id} photo={photo} />;
           })}
       </Layout>
     );
@@ -59,13 +59,13 @@ export default function DisplayPhotos(props) {
       <Layout heading="Folders">
         {referencePhotos.length > 0 &&
           referencePhotos.map((reference) => {
-            return <Folder reference={reference} />;
+            return <Folder key={reference._id} reference={reference} />;
           })}
       </Layout>
       <Layout heading="Query Photos">
         {queryPhotos.length > 0 &&
           queryPhotos.map((photo) => {
-            return <QueryPhoto photo={photo} />;
+            return <QueryPhoto key={photo._id} photo={photo} />;
           })}
       </Layout>
     </Box>

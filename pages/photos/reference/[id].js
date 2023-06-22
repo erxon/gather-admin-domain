@@ -33,6 +33,7 @@ export default function Page() {
         {data.images.map((image) => {
           return (
             <ReferencePhoto
+              key={image._id}
               publicId={image.publicId}
               fileName={image.fileName}
             />

@@ -77,7 +77,7 @@ export default function DeleteModal(props) {
                 This action cannot be undone
               </Typography>
               <Typography variant="body1">
-                Please type the admin's username to confirm
+                Please type the admins username to confirm
               </Typography>
             </Box>
             <TextField
