@@ -12,6 +12,7 @@ import {
   Toolbar,
   Divider,
   Collapse,
+  Badge,
 } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -25,6 +26,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InventoryIcon from "@mui/icons-material/Inventory";
+import PersonIcon from "@mui/icons-material/Person";
 
 const drawerWidth = 240;
 
@@ -49,6 +51,7 @@ function ReportsTab() {
     router.push("/reports");
     setOpen(!open);
   };
+
   return (
     <div>
       <ListItemButton
@@ -64,7 +67,7 @@ function ReportsTab() {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           <ListItemButton
-            sx={{pl: 4, m: 1, height: 45, borderRadius: "10px" }}
+            sx={{ pl: 4, m: 1, height: 45, borderRadius: "10px" }}
             onClick={() => {
               router.push("/reports/archives");
             }}
@@ -79,7 +82,47 @@ function ReportsTab() {
     </div>
   );
 }
+function UsersTab() {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const handleClick = () => {
+    router.push("/users");
+    setOpen(!open);
+  };
 
+  return (
+    <div>
+      <ListItemButton
+        sx={{ m: 1, height: 45, borderRadius: "10px" }}
+        onClick={handleClick}
+      >
+        <ListItemIcon>
+          <GroupIcon />
+        </ListItemIcon>
+        <ListItemText primary="Users" />
+        {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+      </ListItemButton>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItemButton
+            sx={{ pl: 4, m: 1, height: 45, borderRadius: "10px" }}
+            onClick={() => {
+              router.push("/users/unverified");
+            }}
+          >
+            <ListItemIcon>
+              <Badge color="secondary" badgeContent={1}>
+                <PersonIcon />
+              </Badge>
+            </ListItemIcon>
+
+            <ListItemText primary="Unverified" />
+          </ListItemButton>
+        </List>
+      </Collapse>
+    </div>
+  );
+}
 function LayoutDrawer(props) {
   const drawer = (
     <div>
@@ -90,7 +133,7 @@ function LayoutDrawer(props) {
           text="Profile"
           icon={<AccountCircleIcon />}
         />
-        <LayoutListItem route="/users" text="Users" icon={<GroupIcon />} />
+        <UsersTab />
         <ReportsTab />
         <LayoutListItem route="/photos" text="Photos" icon={<PhotoIcon />} />
       </List>
