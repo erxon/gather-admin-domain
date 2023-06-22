@@ -111,7 +111,7 @@ function UsersTab() {
             }}
           >
             <ListItemIcon>
-              <Badge color="secondary" badgeContent={1}>
+              <Badge color="secondary">
                 <PersonIcon />
               </Badge>
             </ListItemIcon>

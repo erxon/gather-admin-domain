@@ -45,15 +45,11 @@ const readUser = (req, res) => {
 const updateUser = async (req, res) => {
   try {
     await dbConnect();
-
-    const { firstName, lastName, type } = req.body;
-
+    
     const updateUser = await User.updateOne(
       { _id: req.result._id },
       {
-        firstName,
-        lastName,
-        type,
+        ...req.body,
         updatedAt: Date.now(),
       }
     );

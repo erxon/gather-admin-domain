@@ -96,7 +96,7 @@ const columns = [
 
 export default function Table(props) {
   return (
-    <Box sx={{height: 400, width: "100%" }}>
+    <Box sx={{height: 500, width: "100%" }}>
       <DataGrid
         autoHeight
         rows={props.users}
@@ -104,7 +104,7 @@ export default function Table(props) {
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 5,
+              pageSize: 10,
             },
           },
         }}
@@ -114,7 +114,7 @@ export default function Table(props) {
             color: "primary.main",
           },
         }}
-        pageSizeOptions={[5]}
+        pageSizeOptions={[10]}
         checkboxSelection
         disableRowSelectionOnClick
       />
