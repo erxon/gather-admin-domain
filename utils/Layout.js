@@ -11,19 +11,20 @@ import {
   IconButton,
   Toolbar,
   Divider,
-  Collapse
+  Collapse,
 } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { Component, useState } from "react";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import HomeIcon from "@mui/icons-material/Home";
 import GroupIcon from "@mui/icons-material/Group";
 import ArticleIcon from "@mui/icons-material/Article";
 import PhotoIcon from "@mui/icons-material/Photo";
 import MenuIcon from "@mui/icons-material/Menu";
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import InventoryIcon from '@mui/icons-material/Inventory';
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import InventoryIcon from "@mui/icons-material/Inventory";
 
 const drawerWidth = 240;
 
@@ -31,6 +32,7 @@ function LayoutListItem(props) {
   const router = useRouter();
   return (
     <ListItemButton
+      sx={{ m: 1, height: 45, borderRadius: "10px" }}
       onClick={() => {
         router.push(props.route);
       }}
@@ -42,14 +44,17 @@ function LayoutListItem(props) {
 }
 function ReportsTab() {
   const router = useRouter();
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const handleClick = () => {
-    router.push('/reports')
-    setOpen(!open)
-  }
+    router.push("/reports");
+    setOpen(!open);
+  };
   return (
     <div>
-      <ListItemButton onClick={handleClick}>
+      <ListItemButton
+        sx={{ m: 1, height: 45, borderRadius: "10px" }}
+        onClick={handleClick}
+      >
         <ListItemIcon>
           <ArticleIcon />
         </ListItemIcon>
@@ -58,7 +63,12 @@ function ReportsTab() {
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItemButton onClick={() => {router.push('/reports/archives')}} sx={{ pl: 4 }}>
+          <ListItemButton
+            sx={{pl: 4, m: 1, height: 45, borderRadius: "10px" }}
+            onClick={() => {
+              router.push("/reports/archives");
+            }}
+          >
             <ListItemIcon>
               <InventoryIcon />
             </ListItemIcon>
@@ -74,6 +84,7 @@ function LayoutDrawer(props) {
   const drawer = (
     <div>
       <List>
+        <LayoutListItem route="/" text="Home" icon={<HomeIcon />} />
         <LayoutListItem
           route="/profile"
           text="Profile"
@@ -173,7 +184,6 @@ export default function Layout({ children }) {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           marginTop: "75px",
         }}

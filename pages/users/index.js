@@ -1,4 +1,3 @@
-
 //Import #Material UI
 import { Box, CircularProgress, Typography } from "@mui/material";
 
@@ -9,15 +8,14 @@ import { fetcher } from "@/utils/auth/hooks";
 //Import #Components
 import Table from "@/components/users/Table";
 
-function addID(data){
-    let index = -1
-    const newArray = data.map((document) => {
-        index = index + 1;
-        return {...document, id: index }
-    })
+function addID(data) {
+  let index = -1;
+  const newArray = data.map((document) => {
+    index = index + 1;
+    return { ...document, id: index };
+  });
 
-    return newArray;
-
+  return newArray;
 }
 
 export default function Page() {
@@ -32,9 +30,7 @@ export default function Page() {
 
   return (
     <div>
-      <Box>
-        <Table users={result} />
-      </Box>
+      <Table users={result} />
     </div>
   );
 }

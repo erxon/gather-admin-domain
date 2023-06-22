@@ -95,9 +95,8 @@ const columns = [
 ];
 
 export default function Table(props) {
-  console.log(props.users);
   return (
-    <Box sx={{ height: 400, width: "100%" }}>
+    <Box sx={{height: 400, width: "100%" }}>
       <DataGrid
         autoHeight
         rows={props.users}
@@ -107,6 +106,12 @@ export default function Table(props) {
             paginationModel: {
               pageSize: 5,
             },
+          },
+        }}
+        sx={{
+
+          "& .MuiDataGrid-cell:hover": {
+            color: "primary.main",
           },
         }}
         pageSizeOptions={[5]}
