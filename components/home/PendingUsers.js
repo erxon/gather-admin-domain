@@ -26,6 +26,7 @@ export default function PendingUsers() {
             {expand ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </IconButton>
         </StackRowLayout>
+        
       </Box>
       <Divider />
     </div>
