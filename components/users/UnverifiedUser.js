@@ -12,6 +12,7 @@ export default function UnverifiedUser({ profile, profileToExpand }) {
       <Paper variant="outlined" sx={{ width: 350, p: 3 }}>
         <StackRowLayout spacing={2}>
           <ProfileAvatar publicId={profile.photo} />
+          
           <Box sx={{width: '100%'}}>
             <Typography
               variant="body1"
