@@ -1,9 +1,10 @@
 import { Box, Divider, Paper, Typography, Button, Alert } from "@mui/material";
-import Photo from "../Photo";
-import StackRowLayout from "../StackRowLayout";
+import Photo from "../../Photo";
+import StackRowLayout from "../../StackRowLayout";
 import Link from "next/link";
 import { useState } from "react";
 import FullScreenPhoto from "./FullScreenPhoto";
+import ConfirmationModal from "./ConfirmationModal";
 
 function Label({ name }) {
   return (
@@ -31,41 +32,28 @@ function SocialMediaAccount({ labelName, fieldValue }) {
 }
 
 export default function UnverifiedUserProfile({ profile }) {
-  const [verified, setVerified] = useState(false);
-  const [error, setError] = useState({
-    error: false,
-    message: "",
-  });
   const [openPhoto, setOpenPhoto] = useState({ open: false, photo: "" });
+  const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
 
   const handlePhotoClose = () => {
     setOpenPhoto({ open: false });
   };
 
-  const handleVerify = async () => {
-    const verifyUser = await fetch(`/api/users/${profile._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        status: "verified",
-      }),
-    });
-
-    if (verifyUser.status === 200) {
-      setVerified(true);
-    } else {
-      setError({
-        error: true,
-        message: "Something went wrong.",
-      });
-    }
+  const handleConfirmationModalClose = () => {
+    setOpenConfirmationModal(false);
   };
+
   return (
     <div>
       <FullScreenPhoto
         photo={openPhoto.photo}
         open={openPhoto.open}
         handleClose={handlePhotoClose}
+      />
+      <ConfirmationModal
+        userId={profile._id}
+        open={openConfirmationModal}
+        handleClose={handleConfirmationModalClose}
       />
       <Paper variant="outlined" sx={{ p: 3 }}>
         <Box>
@@ -128,16 +116,14 @@ export default function UnverifiedUserProfile({ profile }) {
           </StackRowLayout>
         </Paper>
         <Box sx={{ mt: 2 }}>
-          {error.error && <Typography color="red">{error.message}</Typography>}
-          {!verified ? (
-            <Button onClick={handleVerify} variant="contained">
-              Verify
-            </Button>
-          ) : (
-            <Alert sx={{ width: "100%" }} severity="success">
-              User has been verified.
-            </Alert>
-          )}
+          <Button
+            onClick={() => {
+              setOpenConfirmationModal(true);
+            }}
+            variant="contained"
+          >
+            Verify
+          </Button>
         </Box>
       </Paper>
     </div>

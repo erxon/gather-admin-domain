@@ -1,6 +1,6 @@
 import { Paper, Box, Typography, Button } from "@mui/material";
-import ProfileAvatar from "../profile/ProfileCard/ProfileAvatar";
-import StackRowLayout from "../StackRowLayout";
+import ProfileAvatar from "../../profile/ProfileCard/ProfileAvatar";
+import StackRowLayout from "../../StackRowLayout";
 import elapsedTime from "@/utils/elapsedTime";
 
 export default function UnverifiedUser({ profile, profileToExpand }) {

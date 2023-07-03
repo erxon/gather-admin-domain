@@ -1,10 +1,10 @@
 import { CircularProgress, Divider, Grid, Typography } from "@mui/material";
-import UnverifiedUser from "@/components/users/UnverifiedUser";
+import UnverifiedUser from "@/components/users/unverified/UnverifiedUser";
 import useSWR from "swr";
 import { fetcher } from "@/utils/auth/hooks";
 import { useState } from "react";
 
-import UnverifiedUserProfile from "@/components/users/UnverifiedUserProfile";
+import UnverifiedUserProfile from "@/components/users/unverified/UnverifiedUserProfile";
 
 export default function Page() {
   const [profileToExpand, setProfileToExpand] = useState(null);
